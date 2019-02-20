@@ -7,24 +7,26 @@ from mmpy_bot.bot import listen_to
 from mmpy_bot.bot import respond_to
 from mmpy_bot.scheduler import schedule
 
-
+@listen_to('help')
 @listen_to('bots?')
 def help_me(message):
-    
-    message.reply('Im @spinoza, I observe and interact with the redis server at: {host}'.format(host = kv.host))
-    message.reply('If I should follow another server command me *follow server* (e.g. `@spinoza follow i75464)`.' )
+    message.reply(utils.help_text(kv))
+
+@respond_to('who', re.IGNORECASE)
+def help_who(message):
+    message.reply(utils.help_life())
+
+@respond_to('all', re.IGNORECASE)
+@respond_to('list', re.IGNORECASE)
+def all_keys(message):
+    message.reply(utils.list_to_markdown(kv.all_keys()))
 
 @respond_to('follow (.*)', re.IGNORECASE)
 def follow(message, server=None):
-    message.reply('Ok, try to connect to server *{}* and follow'.format(server))
     kv.host = server
     kv.init()
-    message.reply("Connected to server.")
-    md_keys = utils.list_to_markdown(kv.all_keys()) 
-    message.reply("""Available keys are (Ask for the value of a 
-                    `particular_key` by commanding `@spinoza show particular_key` 
-                    or observe a key every N(=20) seconds by 
-                    `@spinoza observe particular_key 20`): {keys}""".format(keys=md_keys))
+    message.reply('Ok, connect to server *{}* and follow'.format(server))
+   
 
 @respond_to('get (.*)', re.IGNORECASE)
 @respond_to('show (.*)', re.IGNORECASE)
@@ -35,14 +37,10 @@ def show(message, key=None):
     else:
         message.reply("Please start with the *follow server_name* command")
            
-@respond_to('observe (.*) (.*)', re.IGNORECASE)
-@respond_to('whatch (.*) (.*)', re.IGNORECASE)
-def whatch_key(message, key, dt=10):
-    value=kv.get(key)
-    schedule.every(int(dt)).seconds.do(message.reply, utils.kv_to_markdown(key=key, value=value))
-
-
-
+@respond_to('observe (.*)', re.IGNORECASE)
+@respond_to('watch (.*)', re.IGNORECASE)
+def watch_key(message, key):
+    schedule.every(5).seconds.do(lambda: utils.reply(message, kv.eget(key)))
 
 @respond_to('stop', re.IGNORECASE)
 def cancel_jobs(message):
