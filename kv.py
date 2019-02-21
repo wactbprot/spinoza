@@ -8,24 +8,26 @@ class KV:
         self.port = 6379
         self.db = 0
         self.old = {}
-        self.init()
+        self.ini_ok = False
         logging.info('initialization complete') 
 
     def init(self):
-        logging.info('make server') 
         self.srv = redis.StrictRedis(host=self.host, port=self.port, db=self.db, decode_responses=True)
         self.ini_ok = True
-
-    def pubsub(self):
-        logging.info('make pubsub') 
-        self.pubsub = self.srv.pubsub()
-
-    def subs(self, channel='io'):
-        self.pubsub.subscribe(channel)
+        logging.info('made server') 
 
     def all_keys(self):
-        return self.srv.keys("*")
-    
+        if self.ini_ok:
+            return self.srv.keys("*")
+        else:
+            return None
+
+    def line_keys(self, n):
+        if self.ini_ok:
+            return self.srv.keys("*@{n}".format(n=n))
+        else:
+            return None
+            
     def eget(self, k):
         """Returns a tupel with (key, value, changed)
         """
@@ -46,6 +48,3 @@ class KV:
 
     def get(self, k):
         return  self.srv.get(k)
-        
-
-        

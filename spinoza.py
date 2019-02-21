@@ -21,13 +21,16 @@ def help_who(message):
 def all_keys(message):
     message.reply(utils.list_to_markdown(kv.all_keys()))
 
-@respond_to('follow (.*)', re.IGNORECASE)
-def follow(message, server=None):
-    kv.host = server
-    kv.init()
-    message.reply('Ok, connect to server *{}* and follow'.format(server))
-   
+@respond_to('line ([0-9]{1,2})', re.IGNORECASE)
+def all_keys(message, n=None):
+    message.reply(utils.list_to_markdown(kv.line_keys(n)))
 
+@respond_to('follow (.*)', re.IGNORECASE)
+def follow(message, host=None):
+    kv.host = host
+    kv.init()
+    message.reply(utils.text_host(kv))
+   
 @respond_to('get (.*)', re.IGNORECASE)
 @respond_to('show (.*)', re.IGNORECASE)
 def show(message, key=None):
@@ -35,7 +38,7 @@ def show(message, key=None):
         value=kv.get(key)
         message.reply(utils.kv_to_markdown(key=key, value=value))
     else:
-        message.reply("Please start with the *follow server_name* command")
+        message.reply(utils.text_follow(kv))
            
 @respond_to('observe (.*)', re.IGNORECASE)
 @respond_to('watch (.*)', re.IGNORECASE)
@@ -45,9 +48,8 @@ def watch_key(message, key):
 @respond_to('stop', re.IGNORECASE)
 def cancel_jobs(message):
     schedule.clear()
-    message.reply('all jobs canceled.')
+    message.reply(utils.text_stop(kv))
 
 if __name__ == "__main__":
     kv = KV()
-
     Bot().run()
