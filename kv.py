@@ -9,6 +9,7 @@ class KV:
         self.db = 0
         self.old = {}
         self.ini_ok = False
+        self.init()
         logging.info('initialization complete') 
 
     def init(self):

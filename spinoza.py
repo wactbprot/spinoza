@@ -1,6 +1,7 @@
+import re
+import logging
 from mmpy_bot.bot import Bot
 import redis
-import re
 from kv import KV
 import utils as utils
 from mmpy_bot.bot import listen_to
@@ -43,7 +44,7 @@ def show(message, key=None):
 @respond_to('observe (.*)', re.IGNORECASE)
 @respond_to('watch (.*)', re.IGNORECASE)
 def watch_key(message, key):
-    schedule.every(5).seconds.do(lambda: utils.reply(message, kv.eget(key)))
+    schedule.every(20).seconds.do(lambda: utils.reply(message, kv.eget(key)))
 
 @respond_to('stop', re.IGNORECASE)
 def cancel_jobs(message):
