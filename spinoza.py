@@ -8,8 +8,7 @@ from mmpy_bot.bot import listen_to
 from mmpy_bot.bot import respond_to
 from mmpy_bot.scheduler import schedule
 
-@listen_to('help')
-@listen_to('bots?')
+@respond_to('help', re.IGNORECASE)
 def help_me(message):
     message.reply(utils.help_text(kv))
 
