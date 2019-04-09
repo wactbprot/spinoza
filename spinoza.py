@@ -4,7 +4,6 @@ from mmpy_bot.bot import Bot
 import redis
 from kv import KV
 import utils as utils
-from mmpy_bot.bot import listen_to
 from mmpy_bot.bot import respond_to
 from mmpy_bot.scheduler import schedule
 
