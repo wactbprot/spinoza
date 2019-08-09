@@ -6,7 +6,7 @@ def list_to_markdown(lst):
 
 def kv_to_markdown(key, value):
     if value is None:
-        return "No value behind key"
+        return "No value for key {k}".format(k=key)
 
     pat = "^([{\[].*?[}\]])$"
     m = re.search(pat, value)
@@ -28,20 +28,5 @@ def help_text(kv):
 def help_life():
     return open("who.md").read()
 
-def text_host(kv):
-    if kv.ini_ok:
-        txt = "Ok, connect to host **{host}** and follow".format(host=kv.host)
-    else:
-        txt = "Not connected"
-
-    return txt
-
-def text_follow(kv):
-    txt = "Please start with the *follow server_name* command"
-
-    return txt
-
 def text_stop(kv):
-    txt = "stop all watching"
-
-    return txt
+    return "stop all watching"

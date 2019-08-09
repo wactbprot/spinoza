@@ -17,9 +17,31 @@ class MP:
         return "{base}/{path}".format(base=self.mp_base_url, path=path)
 
     def get_valve_state(self):
+        descr = [ 
+                "V1 (gate valve)",
+                "V2 (gas inlet)",
+                "V3 (100T)",
+                "V4 (10T)",
+                "V5 (1T)",
+                "V6 (detour pipe)",
+                "V7 (vessel)",
+                "V8 (volume 5)",
+                "V11 (dut-c)",
+                "V10 (dut-b)",
+                "V9 (dut-a)",
+                "V12 (1T PN)",
+                "V13 (500T)",
+                "V14 (50T)",
+                "V15 (5T)",
+                "-",
+                "V17 (scroll vessel)",
+                "V18 (TMP outlet)",
+                "V19 (TMP inlet)",
+                "V20 (PPC4 to scroll)"]
+
         valves = ["V{}".format(i) for i in range(1,21)]
         res = "\n**Current SE3 Valve State:**\n"
-        for valve in valves:
+        for i, valve in enumerate(valves):
             path = "{}/{}".format("mpd-se3-valves/exchange", valve)
             url = self.build_url(path)
             resp = requests.get(url)
@@ -27,22 +49,28 @@ class MP:
            
             if "Bool" in ret:
                 if ret["Bool"] == 1:
-                    state = "✓ (open)"
+                    state = ":white_check_mark:"
                 else:
-                    state = "✗ (closed)"
+                    state = ":red_circle:"
             else:
                     state = "☐ unknown"
-            res = res + "**{v}**    {s}\n".format(v=valve, s=state)
+            res = res + "{s}\t\t\t**{d}**\n".format(d=descr[i], s=state)
 
         return res
     
     def get_servo_state(self):
         rr = range(1,7)
+        descr = [
+                "Vs inlet", "Vs outlet",
+                "Vm inlet", "Vm outlet",
+                "Vl inlet", "Vl outlet",
+                ]
         servo_no = ["{}".format(i) for i in rr] 
         servo_pos = ["Servo_{}_Pos".format(i) for i in rr]
         servo_velo = ["Servo_{}_Velo".format(i) for i in rr]
-
-        entr = "**Servo Motor {i}:**\n\tVelocity: {v} {vu}\n\tPosition: {p} {pu}\n"
+        servo_move = ["Servo_{}_Move".format(i) for i in rr]
+        
+        entr = "* **Servo Motor {i} _({d})_:**\n\t* Velocity: {v} {vu}\n\t* Position: {p} {pu}\n\t* Moving:{m}\n"
         res = "\n**Current SE3 Servo State:**\n\n"
         for i, _ in enumerate(servo_no):
             
@@ -55,7 +83,7 @@ class MP:
                 p = ret_pos["Value"].replace("\n", "").replace("\r", "")
                 pu = ret_pos["Unit"]
             else:
-                p = "unknown"
+                p = "◌͍"
                 pu = ""
 
             path = "{}/{}".format("mpd-se3-servo/exchange", servo_velo[i])
@@ -66,15 +94,27 @@ class MP:
                 v = ret_velo["Value"]
                 vu = ret_velo["Unit"]
             else:
-                v = "☐ unknown"
+                v = "◌͍"
                 vu = ""
 
+            path = "{}/{}".format("mpd-se3-servo/exchange", servo_move[i])
+            url = self.build_url(path)
+            resp = requests.get(url)
+            ret_move = resp.json()
+            if "Bool" in ret_move:
+                m = ret_move["Bool"]
+            else:
+                m = "◌͍"
+
             res = res + entr.format(
-                                    i = servo_no[i], 
+                                    i = servo_no[i],
+                                    d = descr[i],
+                                    m = m,
                                     v = v, vu = vu, 
                                     p = p, pu = pu, 
                                     )
-        res = res + "\n (velo. refresh stops for |v| < 5rpm)"    
+        res = res + "\n→ velo. refresh stops for |v| < 5rpm"
+        res = res + "\n→  ◌͍ ... not changed since last init"    
         return res
 
     def get_gn_pressure(self):
@@ -114,6 +154,6 @@ class MP:
 if __name__ == "__main__":
     mp = MP()
     #print( open("help.md").read())
-    #print(mp.get_valve_state())
+    print(mp.get_valve_state())
     #print(mp.get_servo_state())
     #print(mp.get_gn_pressure())
