@@ -23,34 +23,10 @@ def reply(message, kvc):
         message.reply(content)
 
 def help_text(kv):
-    txt = """Im the bot @spinoza. I interact with the redis server at: **{host}**.
-    \n* If I should follow another server command:  **follow server** e.g. @spinoza follow i75464
-    \n* I'll *observe* or *watch* redis keys periodically if you command: **observe key** e.g. @spinoza observe info@0 or  @spinoza watch raw_result@2
-    \n* To list all the keys available use: **all** or **list** e.g. @spinoza list or @spinoza all
-    \n* *Get* or *show* the value behind the key by : **get** or **show** e.g. @spinoza show raw_result@2 or @spinoza get info@0
-    \n* To list all keys at an line use: **line n** e.g. @spinoza line 2
-    \n* Try @spinoza who
-    """.format(host=kv.host)
-
-    return txt
+    return open("help.md").read()
 
 def help_life():
-    txt = """
-    **Baruch Spinoza** (/bəˈruːk spɪˈnoʊzə/; Dutch: [baːˈrux spɪˈnoːzaː]; born
-    Benedito de Espinosa, Portuguese: [bɨnɨˈðitu ðɨ ʃpiˈnɔzɐ]; 24 November **1632**
-    – 21 February **1677**, later Benedict de Spinoza) was a **Jewish-Dutch philosopher**
-    of Portuguese Sephardi origin. By laying the groundwork for
-    the Enlightenment and modern biblical criticism, including modern
-    conceptions of the self and the universe, he came to be considered one
-    of the great **rationalists** of 17th-century philosophy. Along with René
-    Descartes, Spinoza was a leading philosophical figure of the Dutch Golden
-    Age. Spinoza's given name, which means 'Blessed', varies among different
-    languages. In Hebrew, it is written ברוך שפינוזה‬. His Portuguese name is
-    Benedito 'Bento' de Espinosa or d'Espinosa. In his Latin works, he used
-    Latin: Benedictus de Spinoza. (--https://en.wikipedia.org/wiki/Baruch_Spinoza)
-    """
-
-    return txt
+    return open("who.md").read()
 
 def text_host(kv):
     if kv.ini_ok:
