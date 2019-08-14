@@ -4,8 +4,7 @@ import sys
 import os
 import json
 sys.path.append(os.environ["VIRTUAL_ENV"])
-#from mp import MP
-#m = MP()
+
 class MP:
     def __init__(self):
        
