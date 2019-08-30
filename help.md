@@ -25,5 +25,11 @@
 * .ss: state of the se3 servo motors
 * .sp: pressure of the se3 group normal cdgs
 
+Here are some `ssmp` related commands:
+
+* .ssi: ssmp info
+* .ssee: show the **exchange** interface of **mpd-se3-calib**
+* .ssem: show the **meta** structure of **mpd-se3-calib**
+* .sses: show the **state** structure of **mpd-se3-calib**
 :robot: 
     

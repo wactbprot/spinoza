@@ -12,16 +12,32 @@ from mmpy_bot.bot import listen_to
 from mmpy_bot.scheduler import schedule
 
 
+@listen_to('^\.ssi$')
+def ssmp_info(message):
+    message.reply(utils.json_to_markdown(mp.get_ssmp_info()))
+
+@listen_to('^\.ssee$')
+def ssmp_info(message):
+    message.reply(utils.json_to_markdown(mp.get_ssmp_expansion_exchange()))
+
+@listen_to('^\.ssem$')
+def ssmp_meta(message):
+    message.reply(utils.json_to_markdown(mp.get_ssmp_expansion_meta()))
+
+@listen_to('^\.sses$')
+def ssmp_state(message):
+    message.reply(utils.json_to_markdown(mp.get_ssmp_expansion_state()))
+
 @listen_to('^\.sp$')
-def help_me(message):
+def gn_pressure(message):
     message.reply(mp.get_gn_pressure())
 
 @listen_to('^\.sv$')
-def help_me(message):
+def valve_state(message):
     message.reply(mp.get_valve_state())
 
 @listen_to('^\.ss$')
-def help_me(message):
+def servo_state(message):
     message.reply(mp.get_servo_state())
 
 @listen_to('^\.s\?$')

@@ -15,6 +15,40 @@ class MP:
     def build_url(self, path):
         return "{base}/{path}".format(base=self.mp_base_url, path=path)
 
+    def get_ssmp_info(self):
+        resp = requests.get(self.build_url("info"))
+        ret = resp.json()
+
+        return json.dumps(ret)
+    
+    def get_ssmp_expansion_exchange(self):
+        resp = requests.get(self.build_url("mpd-se3-calib/exchange"))
+        ret = resp.json()
+
+        return json.dumps(ret)
+    
+    def get_ssmp_expansion_meta(self):
+        resp = requests.get(self.build_url("mpd-se3-calib/meta"))
+        ret = resp.json()
+
+        return json.dumps(ret)
+
+    def get_ssmp_expansion_state(self):
+        resp = requests.get(self.build_url("mpd-se3-calib/meta"))
+        ret = resp.json()
+        state = {}
+        
+        n = ret.get("container",{}).get("N")
+        if n:
+            n = int(n)
+            for i in range(1,n):
+                resp = requests.get(self.build_url("mpd-se3-calib/{}/state".format(i)))
+                state["container_{}".format(i)]  = resp.json()
+
+            return json.dumps(state)
+        else:   
+            return json.dumps({"error":"no N in meta"})
+
     def get_valve_state(self):
         descr = [ 
                 "V1 (gate valve)",
@@ -152,6 +186,7 @@ class MP:
 
 if __name__ == "__main__":
     mp = MP()
+    print(mp.get_ssmp_expansion_state())
     #print( open("help.md").read())
     #print(mp.get_valve_state())
     #print(mp.get_servo_state())

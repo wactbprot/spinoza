@@ -4,15 +4,19 @@ import json
 def list_to_markdown(lst):
     return "\n{}".format("\n".join( ["* {}".format(i) for i in lst]))
 
+def json_to_markdown(j):
+    pat = "^([{\[].*?[}\]])$"
+    m = re.search(pat, j)
+    if m:
+        j = json.dumps(json.loads(m.group(1)), sort_keys=True, indent=4, separators=(',', ': '))
+    
+    return "\n```json\n{}\n```\n".format(j)
+
 def kv_to_markdown(key, value):
     if value is None:
         return "No value for key {k}".format(k=key)
-
-    pat = "^([{\[].*?[}\]])$"
-    m = re.search(pat, value)
-    if m:
-        value = json.dumps(json.loads(m.group(1)), sort_keys=True, indent=4, separators=(',', ': '))
-        value = "```json\n{value}\n```".format(value=value)
+    
+    value = json_to_markdown(value)
 
     return 'The value of key **{key}** is:\n {value}'.format(key = key, value=value)
 
