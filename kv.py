@@ -23,6 +23,12 @@ class KV:
         else:
             return None
 
+    def part_keys(self, part):
+        if self.ini_ok:
+            return self.srv.keys("{part}*".format(part=part))
+        else:
+            return None
+
     def line_keys(self, n):
         if self.ini_ok:
             return self.srv.keys("*@{n}".format(n=n))
@@ -47,5 +53,12 @@ class KV:
 
         return k, v, changed
 
+    
     def get(self, k):
         return  self.srv.get(k)
+
+if __name__ == "__main__":
+    kv = KV()
+    ks = kv.part_keys("raw_result")
+    for k in ks:
+        print(k)

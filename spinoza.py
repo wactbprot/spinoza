@@ -39,6 +39,13 @@ def observe_info(message):
     message.reply("start observing key info")
     schedule.every(20).seconds.do(lambda: utils.reply(message, kv.eget('info@0')))
 
+@listen_to('^\.sr$')
+def observe_results(message):
+    ks = kv.part_keys("raw_result")
+    for k in ks:
+        message.reply("start observing key {key}".format(key=k))
+        schedule.every(20).seconds.do(lambda: utils.reply(message, kv.eget(k)))
+
 @respond_to('help')
 def help_me(message):
     message.reply(utils.help_text(kv))

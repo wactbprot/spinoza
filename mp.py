@@ -153,6 +153,6 @@ class MP:
 if __name__ == "__main__":
     mp = MP()
     #print( open("help.md").read())
-    print(mp.get_valve_state())
+    #print(mp.get_valve_state())
     #print(mp.get_servo_state())
     #print(mp.get_gn_pressure())
